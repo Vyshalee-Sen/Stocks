@@ -75,7 +75,7 @@ regressor.compile(optimizer = 'adam', loss = 'mean_squared_error')
 
 print(regressor.summary())
 
-regressor.fit(X_train, y_train, epochs = 100, batch_size = 32)
+regressor.fit(X_train, y_train, epochs = 1, batch_size = 1)
 
 dataset_test = pd.read_csv("GOOG_test.csv")
 real_stock_price = dataset_test.iloc[:, 2:3].values
