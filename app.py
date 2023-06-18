@@ -92,7 +92,7 @@ predicted_stock_price = regressor.predict(X_test)
 predicted_stock_price = sc.inverse_transform(predicted_stock_price)
 
 # Visualising the results
-grp=plt.figure(1);fig.clf()
+grp=plt.figure(1);grp.clf()
 plt.plot(real_stock_price, color = 'red', label = 'Real Google Stock Price')
 plt.plot(predicted_stock_price, color = 'blue', label = 'Predicted Google Stock Price')
 plt.title('Google Stock Price Prediction')
