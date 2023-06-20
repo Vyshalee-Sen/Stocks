@@ -38,16 +38,16 @@ high=px.line(df_selection,x="date",y="high",title="High Price of Stock")
 st.plotly_chart(high)
 st.write("**Insights:**")
 ll="The stock price reached its maximum of "+ str(df_selection['high'].max(numeric_only = True))+ " in "+ y + " during the month of "+str(df.loc[df['high'] == df_selection['high'].max(numeric_only = True), 'month'].values)
-tl="The stock price reached its minimum of "+ str(df_selection['high'].min(numeric_only = True))+ " in "+ y + " during the month of "+str(df.loc[df['high'] == df_selection['high'].min(numeric_only = True), 'month'].values)
-
 st.write(ll)
-st.write(tl)
 
 
 
 #low stock price
 low=px.line(df_selection,x="date",y="low",title="Low Price of Stock")
 st.plotly_chart(low)
+tl="The stock price reached its minimum of "+ str(df_selection['high'].min(numeric_only = True))+ " in "+ y + " during the month of "+str(df.loc[df['high'] == df_selection['high'].min(numeric_only = True), 'month'].values)
+st.write(tl)
+
 
 #plot between variables
 left_column, right_column = st.columns(2)
