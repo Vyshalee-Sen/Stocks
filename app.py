@@ -45,8 +45,19 @@ st.write(ll)
 #low stock price
 low=px.line(df_selection,x="date",y="low",title="Low Price of Stock")
 st.plotly_chart(low)
-tl="The stock price reached its minimum of "+ str(df_selection['high'].min(numeric_only = True))+ " in "+ y + " during the month of "+str(df.loc[df['high'] == df_selection['high'].min(numeric_only = True), 'month'].values)
+st.write("**Insights:**")
+tl="The stock price reached its minimum of "+ str(df_selection['low'].min(numeric_only = True))+ " in "+ y + " during the month of "+str(df.loc[df['low'] == df_selection['low'].min(numeric_only = True), 'month'].values)
 st.write(tl)
+
+
+#Heatmaps
+cmap = "tab20"
+df_s=pd.read_csv('GOOG.csv',usecols=[2,5,6,7,10,11,12])
+
+st.title("Heatmap between Attributes")
+fig, ax = plt.subplots()
+sn.heatmap(df_s.corr(numeric_only = True),annot = True, fmt='.1g',cmap= 'coolwarm', ax=ax)
+st.write(fig)
 
 
 #plot between variables
@@ -59,14 +70,6 @@ with right_column:
 test=px.bar(df_selection,x,y,title="Selected Plot")
 st.plotly_chart(test)
 
-
-cmap = "tab20"
-df_s=pd.read_csv('GOOG.csv',usecols=[2,5,6,7,10,11,12])
-
-st.title("Heatmap between Attributes")
-fig, ax = plt.subplots()
-sn.heatmap(df_s.corr(numeric_only = True),annot = True, fmt='.1g',cmap= 'coolwarm', ax=ax)
-st.write(fig)
 
 
 #price in each month
