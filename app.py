@@ -59,8 +59,8 @@ st.write(fig)
 p_month = df_selection.groupby(by=["month"]).mean(numeric_only=True)[["low"]]
 p_month_bar = px.bar(
     p_month,
-    x="low",
-    y=p_month.index,
+    x=p_month.index,
+    y='low',
     title="<b>Average Price</b>",
     color_discrete_sequence=["#0083B8"] * len(p_month),
     template="plotly_white",
