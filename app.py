@@ -52,12 +52,15 @@ st.write(tl)
 
 #Heatmaps
 cmap = "tab20"
-df_s=pd.read_csv('GOOG.csv',usecols=[2,5,6,7,10,11,12])
+df_s=pd.read_csv('GOOG.csv',usecols=[3,6,7,8,11,12])
 
 st.title("Heatmap between Attributes")
 fig, ax = plt.subplots()
 sn.heatmap(df_s.corr(numeric_only = True),annot = True, fmt='.1g',cmap= 'coolwarm', ax=ax)
 st.write(fig)
+st.write("**Insights:**")
+st.write("if the value between the attributes is greater than zero then it denotes a direct proportion between them")
+st.write("if the value between the attributes is less than zero then it denotes a inverse proportion between them")
 
 
 #plot between variables
@@ -82,6 +85,10 @@ p_month_bar = px.bar(
     color_discrete_sequence=["#0083B8"] * len(p_month),
     template="plotly_white",
 )
-
 st.plotly_chart(p_month_bar)
+st.write("**Insights:**")
+ll="The highest average price of a stock is  " +str(p_month['low'].max(numeric_only = True))
+tl="The lowest average price of a stock is  " +str(p_month['low'].min(numeric_only = True))
+st.write(ll)
+st.write(tl)
 
