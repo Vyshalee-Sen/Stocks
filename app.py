@@ -49,10 +49,6 @@ st.plotly_chart(test)
 cmap = "tab20"
 df_s=pd.read_csv('GOOG.csv',usecols=[2,5,6,7,10,11,12])
 
-st.title("Heatmap between Attributes")
-fig, ax = plt.subplots()
-sn.heatmap(df_s.corr(),annot = True, fmt='.1g',cmap= 'coolwarm', ax=ax)
-st.write(fig)
 
 
 #price in each month
@@ -67,4 +63,10 @@ p_month_bar = px.bar(
 )
 
 st.plotly_chart(p_month_bar)
+
+st.title("Heatmap between Attributes")
+fig, ax = plt.subplots()
+sn.heatmap(df_s.corr(),annot = True, fmt='.1g',cmap= 'coolwarm', ax=ax)
+st.write(fig)
+
 
