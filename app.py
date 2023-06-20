@@ -1,7 +1,8 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-
+import seaborn as sn
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Stock Prediction", page_icon=":fire:")
 st.title("🌎 Stocks Prediction")
@@ -16,92 +17,54 @@ df_selection=df.query("year==@year")
 st.dataframe(df_selection)
 
 #No of stocks traded
+st.title('Stocks Traded')
+st.area_chart(df_selection,x='date',y=['volume'])
+
 s_traded=px.scatter(df_selection,x="date",y="volume",animation_frame="date",range_x=["2016-01-01", "2023-04-01"],range_y=[100,14000000],title="Stocks Traded")
-
-
-s=px.line(df_selection,x="date",y="volume",title="Stocks Traded")
-
-
-
-st.plotly_chart(s)
 
 s_traded.layout.updatemenus[0].buttons[0].args[1]['frame']['duration'] = 80
 s_traded.layout.updatemenus[0].buttons[0].args[1]['transition']['duration'] = 80
 
 st.plotly_chart(s_traded)
 
+#high stock price
+high=px.line(df_selection,x="date",y="high",title="High Price of Stock")
+st.plotly_chart(high)
+
+#low stock price
+low=px.line(df_selection,x="date",y="low",title="Low Price of Stock")
+st.plotly_chart(low)
+
+#plot between variables
+left_column, right_column = st.columns(2)
+with left_column:
+    x=st.selectbox("Select x axis",options=['date','low','high','adjClose','volume','close','adjOpen'])
+with right_column:
+    y=st.selectbox("Select y axis",options=['high','low','date','adjClose','volume','close','adjOpen'])
+
+test=px.bar(df_selection,x,y,title="Selected Plot")
+st.plotly_chart(test)
 
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM,Dropout,Dense
+cmap = "tab20"
+df_s=pd.read_csv('GOOG.csv',usecols=[2,5,6,7,10,11,12])
 
-dataset_train = pd.read_csv("GOOG_train.csv")
-training_set = dataset_train.iloc[:, 2:3].values
-
-sc = MinMaxScaler(feature_range = (0, 1))
-training_set_scaled = sc.fit_transform(training_set)
-
-X_train = []
-y_train = []
-
-for i in range(60, 1219):
-    X_train.append(training_set_scaled[i-60:i, 0])
-    y_train.append(training_set_scaled[i, 0])
-
-X_train, y_train = np.array(X_train), np.array(y_train)
-X_train = np.reshape(X_train, (X_train.shape[0], X_train.shape[1], 1))
-
-regressor = Sequential()
-
-regressor.add(LSTM(units = 50, return_sequences = True, input_shape = (X_train.shape[1], 1)))
-regressor.add(Dropout(0.2))
-
-regressor.add(LSTM(units = 50, return_sequences = True))
-regressor.add(Dropout(0.2))
-
-regressor.add(LSTM(units = 50, return_sequences = True))
-regressor.add(Dropout(0.2))
-
-regressor.add(LSTM(units = 50))
-regressor.add(Dropout(0.2))
-
-regressor.add(Dense(units = 1))
-
-regressor.compile(optimizer = 'adam', loss = 'mean_squared_error')
-
-print(regressor.summary())
-
-regressor.fit(X_train, y_train, epochs = 100, batch_size = 37)
-
-dataset_test = pd.read_csv("GOOG_test.csv")
-real_stock_price = dataset_test.iloc[:, 2:3].values
-
-# Getting the predicted stock price of 2017
-dataset_total = pd.concat((dataset_train['open'], dataset_test['open']), axis = 0)
-inputs = dataset_total[len(dataset_total) - len(dataset_test) - 60:].values
-inputs = inputs.reshape(-1,1)
-inputs = sc.transform(inputs)
-X_test = []
-for i in range(60, 100):
-    X_test.append(inputs[i-60:i, 0])
-X_test = np.array(X_test)
-X_test = np.reshape(X_test, (X_test.shape[0], X_test.shape[1], 1))
-predicted_stock_price = regressor.predict(X_test)
-predicted_stock_price = sc.inverse_transform(predicted_stock_price)
-
-# Visualising the results
-grp=plt.figure(1);grp.clf()
-plt.plot(real_stock_price, color = 'red', label = 'Real Google Stock Price')
-plt.plot(predicted_stock_price, color = 'blue', label = 'Predicted Google Stock Price')
-plt.title('Google Stock Price Prediction',color='white')
-plt.xlabel('Time',color='white')
-plt.ylabel('Google Stock Price',color='white')
-plt.legend(labelcolor='white')
-plt.show()
+st.title("Heatmap between Attributes")
+fig, ax = plt.subplots()
+sn.heatmap(df_s.corr(),annot = True, fmt='.1g',cmap= 'coolwarm', ax=ax)
+st.write(fig)
 
 
-st.plotly_chart(grp)
+#price in each month
+p_month = df_selection.groupby(by=["month"]).mean()[["low"]]
+p_month_bar = px.bar(
+    p_month,
+    x="low",
+    y=p_month.index,
+    title="<b>Average Price</b>",
+    color_discrete_sequence=["#0083B8"] * len(p_month),
+    template="plotly_white",
+)
+
+st.plotly_chart(p_month_bar)
+
